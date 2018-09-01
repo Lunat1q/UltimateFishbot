@@ -3,12 +3,10 @@ using System.Drawing;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using UltimateFishBot.Classes;
-using UltimateFishBot.Classes.Helpers;
-using UltimateFishBot.Forms;
+using UltimateFishBot.Helpers;
 using UltimateFishBot.Properties;
 
-namespace UltimateFishBot
+namespace UltimateFishBot.Forms
 {
     public partial class frmMain : Form, IManagerEventHandler
     {
@@ -50,8 +48,8 @@ namespace UltimateFishBot
             //this.Text          = "UltimateFishBot - v " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             /* Hide ? */
             Random r = new Random();
-            this.Text = r.Next(1000, 1000000).ToString();
-            this.Text = this.Text.GetHashCode().ToString();
+            Text = r.Next(1000, 1000000).ToString();
+            Text = Text.GetHashCode().ToString();
 
             
             ReloadHotkeys();
@@ -110,7 +108,7 @@ namespace UltimateFishBot
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         protected override void WndProc(ref Message m)
@@ -148,17 +146,17 @@ namespace UltimateFishBot
                 {
                     switch (hotKey)
                     {
-                        case HotKey.StartStop: key = Properties.Settings.Default.StartStopHotKey; break;
-                        case HotKey.CursorCapture: key = Properties.Settings.Default.CursorCaptureHotKey; break;
+                        case HotKey.StartStop: key = Settings.Default.StartStopHotKey; break;
+                        case HotKey.CursorCapture: key = Settings.Default.CursorCaptureHotKey; break;
                         default: continue;
                     }
 
                     KeyModifier modifiers = RemoveAndReturnModifiers(ref key);
-                    Win32.RegisterHotKey(this.Handle, (int)hotKey, (int)modifiers, (int)key);
+                    Win32.RegisterHotKey(Handle, (int)hotKey, (int)modifiers, (int)key);
 
-                } catch(Exception ex)
+                } catch(Exception)
                 {
-                    Console.WriteLine("Unable to load Hotkey:" + key);
+                    Console.WriteLine($@"Unable to load Hotkey: {key}");
                 }
             }
         }
@@ -166,7 +164,7 @@ namespace UltimateFishBot
         public void UnregisterHotKeys() {
             // Unregister all hotkeys before closing the form.
             foreach (HotKey hotKey in (HotKey[])Enum.GetValues(typeof(HotKey)))
-                Win32.UnregisterHotKey(this.Handle, (int)hotKey);
+                Win32.UnregisterHotKey(Handle, (int)hotKey);
         }
 
         private KeyModifier RemoveAndReturnModifiers(ref Keys key) {
