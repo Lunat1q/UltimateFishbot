@@ -114,6 +114,7 @@
     <Compile Include="Classes\BodyParts\T2S.cs" />
     <Compile Include="Classes\BotSession.cs" />
     <Compile Include="Classes\Collections\LimitedCollection.cs" />
+    <Compile Include="Classes\Extensions\BitmapExt.cs" />
     <Compile Include="Classes\FishingStats.cs" />
     <Compile Include="Classes\Fishing\BobbyLocation.cs" />
     <Compile Include="Classes\Fishing\BobbyLocationStorage.cs" />

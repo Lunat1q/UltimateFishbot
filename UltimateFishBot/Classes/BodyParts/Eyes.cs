@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using Serilog;
+using UltimateFishBot.Classes.Extensions;
 using UltimateFishBot.Fishing;
 using UltimateFishBot.Helpers;
 
@@ -126,7 +127,7 @@ namespace UltimateFishBot.BodyParts
             }
             // debug
             /*
-            Bitmap bmpDst = new Bitmap(castbmp);
+            BitmapExt bmpDst = new BitmapExt(castbmp);
             using (var g = Graphics.FromImage(bmpDst)) {
                 foreach (var br in brl) {
                     if ((br.Right - br.Left) > 11 && (br.Bottom - br.Top) > 11) {
@@ -245,11 +246,11 @@ namespace UltimateFishBot.BodyParts
 
             // Compare the actual icon with our fishIcon if user want it
             if (Properties.Settings.Default.CheckCursor) { 
-                if (ImageCompare(Win32.GetCursorIcon(actualCursor), Properties.Resources.fishIcon35x35)) { 
+                if (Win32.GetCursorIcon(actualCursor).ImageCompare(Properties.Resources.fishIcon35x35)) { 
                     // We found a fish!
                     return true;
                 }
-                if (_capturedCursorIcon != null && ImageCompare(Win32.GetCursorIcon(actualCursor), _capturedCursorIcon)) {
+                if (_capturedCursorIcon != null && Win32.GetCursorIcon(actualCursor).ImageCompare(_capturedCursorIcon)) {
                     // We found a fish!
                     return true;
                 }
@@ -257,44 +258,6 @@ namespace UltimateFishBot.BodyParts
             }
 
             return true;
-        }
-
-
-        private static bool ImageCompare(Bitmap bmp1, Bitmap bmp2)  {
-
-            if (bmp1 == null || bmp2 == null) { 
-                return false;
-            }
-            if (Equals(bmp1, bmp2)) { 
-                return true;
-            }
-            if (!bmp1.Size.Equals(bmp2.Size) || !bmp1.PixelFormat.Equals(bmp2.PixelFormat)) { 
-                return false;
-            }
-
-            var bytes = bmp1.Width * bmp1.Height * (System.Drawing.Image.GetPixelFormatSize(bmp1.PixelFormat) / 8);
-
-            var result = true;
-            var b1Bytes = new byte[bytes];
-            var b2Bytes = new byte[bytes];
-
-            var bitmapData1 = bmp1.LockBits(new Rectangle(0, 0, bmp1.Width - 1, bmp1.Height - 1), ImageLockMode.ReadOnly, bmp1.PixelFormat);
-            var bitmapData2 = bmp2.LockBits(new Rectangle(0, 0, bmp2.Width - 1, bmp2.Height - 1), ImageLockMode.ReadOnly, bmp2.PixelFormat);
-
-            Marshal.Copy(bitmapData1.Scan0, b1Bytes, 0, bytes);
-            Marshal.Copy(bitmapData2.Scan0, b2Bytes, 0, bytes);
-
-            for (var n = 0; n <= bytes - 1; n++) {
-                if (b1Bytes[n] != b2Bytes[n]) {
-                    result = false;
-                    break;
-                }
-            }
-
-            bmp1.UnlockBits(bitmapData1);
-            bmp2.UnlockBits(bitmapData2);
-
-            return result;
         }
 
         public void CaptureCursor() {
