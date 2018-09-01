@@ -7,9 +7,10 @@ namespace UltimateFishBot
 {
     internal class Translate
     {
-        static private XmlElement _mElements = null;
+        private const string MissingTranslation = "<MISSING TRANSLATION>";
+        private static XmlElement _mElements = null;
 
-        static private void ExtractElements()
+        private static void ExtractElements()
         {
             if (_mElements == null)
             {
@@ -28,10 +29,10 @@ namespace UltimateFishBot
             }
         }
 
-        static public string GetTranslate(string formName, string nodeName, params Object[] list)
+        public static string GetTranslate(string formName, string nodeName, params object[] list)
         {
             ExtractElements();
-            string returnText = "MISSING TRANSLATION";
+            string returnText = MissingTranslation;
 
             // If we can't open the Translation file, everything will appear as "MISSING TRANSLATION"
             if (_mElements == null)
@@ -54,7 +55,7 @@ namespace UltimateFishBot
                 returnText = string.Join("\n", returnText.Split('\n').Select(s => s.Trim()));
 
                 // Replace {int} in text by variables. Ex : "Waiting for Fish ({0}/{1}s) ..."
-                returnText = String.Format(returnText, list);
+                returnText = string.Format(returnText, list);
             }
             catch (Exception ex)
             {
@@ -63,15 +64,15 @@ namespace UltimateFishBot
 
             return returnText;
         }
-        static public List<String> GetTranslates(string formName, string nodeName, params Object[] list)
+        public static IEnumerable<string> GetTranslates(string formName, string nodeName, params object[] list)
         {
             ExtractElements();
-            List<String> returnList = new List<String>();
+            List<string> returnList = new List<string>();
 
             // If we can't open the Translation file, everything will appear as "MISSING TRANSLATION"
             if (_mElements == null)
             {
-                returnList.Add("MISSING_TRANSLATION");
+                returnList.Add(MissingTranslation);
                 return returnList;
             }
 
@@ -86,10 +87,10 @@ namespace UltimateFishBot
                             returnList.Add(node.InnerText);
 
                 // Remove the extras spaces from each lines
-                returnList.Select(text => String.Join("\n", text.Split('\n').Select(s => s.Trim())));
+                var enumerable = returnList.Select(text => string.Join("\n", text.Split('\n').Select(s => s.Trim())));
 
                 // Replace {int} in text by variables. Ex : "Waiting for Fish ({0}/{1}s) ..."
-                returnList.Select(text => String.Format(text, list));
+                return enumerable.Select(text => string.Format(text, list));
             }
             catch (Exception ex)
             {
