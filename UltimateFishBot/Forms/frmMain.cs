@@ -11,7 +11,8 @@ namespace UltimateFishBot.Forms
     public partial class frmMain : Form, IManagerEventHandler
     {
 
-        public enum KeyModifier
+        [Flags]
+        private enum KeyModifier
         {
             None = 0,
             Alt = 1,
@@ -19,7 +20,7 @@ namespace UltimateFishBot.Forms
             Shift = 4
         }
 
-        public enum HotKey
+        private enum HotKey
         {
             StartStop = 0,
             CursorCapture = 1
@@ -30,7 +31,7 @@ namespace UltimateFishBot.Forms
             ReloadHotkeys();
             InitializeComponent();
 
-            m_manager = new Manager(this, new Progress<string>(text =>
+            _manager = new Manager(this, new Progress<string>(text =>
             {
                 lblStatus.Text = text;
             }));
@@ -80,12 +81,12 @@ namespace UltimateFishBot.Forms
 
         private async void btnStart_Click(object sender, EventArgs e)
         {
-            await m_manager.StartOrResumeOrPause();
+            await _manager.StartOrResumeOrPause();
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            m_manager.Stop();
+            _manager.Stop();
         }
 
         private void btnSettings_Click(object sender, EventArgs e)
@@ -95,7 +96,7 @@ namespace UltimateFishBot.Forms
 
         private void btnStatistics_Click(object sender, EventArgs e)
         {
-            frmStats.GetForm(m_manager).Show();
+            frmStats.GetForm(_manager).Show();
         }
 
         private void btnHowTo_Click(object sender, EventArgs e)
@@ -120,7 +121,7 @@ namespace UltimateFishBot.Forms
                 if (id == (int)HotKey.StartStop) {
                     Task.Factory.StartNew(async () => {
                         try {
-                            await m_manager.StartOrStop();
+                            await _manager.StartOrStop();
                         } catch (TaskCanceledException) {
                             // Do nothing, cancellations are to be expected
                         }
@@ -129,7 +130,7 @@ namespace UltimateFishBot.Forms
                     TaskCreationOptions.None,
                     TaskScheduler.FromCurrentSynchronizationContext());
                 } else if (id == (int)HotKey.CursorCapture) {
-                    m_manager.CaptureCursor();
+                    _manager.CaptureCursor();
                 }
             }
         }
@@ -165,7 +166,7 @@ namespace UltimateFishBot.Forms
         }
 
         private KeyModifier RemoveAndReturnModifiers(ref Keys key) {
-            KeyModifier modifiers = KeyModifier.None;
+            var modifiers = KeyModifier.None;
 
             modifiers |= RemoveAndReturnModifier(ref key, Keys.Shift, KeyModifier.Shift);
             modifiers |= RemoveAndReturnModifier(ref key, Keys.Control, KeyModifier.Control);
@@ -190,7 +191,7 @@ namespace UltimateFishBot.Forms
             UnregisterHotKeys();
         }
 
-        private Manager m_manager;
+        private readonly Manager _manager;
         private static int WM_HOTKEY = 0x0312;
 
 

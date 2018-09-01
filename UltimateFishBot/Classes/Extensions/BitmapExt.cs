@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
@@ -6,47 +7,33 @@ namespace UltimateFishBot.Extensions
 {
     internal static class BitmapExt
     {
-        public static bool ImageCompare(this Bitmap bmp1, Bitmap bmp2)
+        [DllImport("msvcrt.dll")]
+        private static extern int memcmp(IntPtr b1, IntPtr b2, long count);
+
+        public static bool ImageCompare(this Bitmap b1, Bitmap b2)
         {
+            if (b1 == null || b2 == null) return false;
+            if (b1.Size != b2.Size || !b1.PixelFormat.Equals(b2.PixelFormat)) return false;
+            if (ReferenceEquals(b1, b2)) return true;
 
-            if (bmp1 == null || bmp2 == null)
+            var bd1 = b1.LockBits(new Rectangle(new Point(0, 0), b1.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            var bd2 = b2.LockBits(new Rectangle(new Point(0, 0), b2.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+            try
             {
-                return false;
+                var bd1Scan0 = bd1.Scan0;
+                var bd2Scan0 = bd2.Scan0;
+
+                var stride = bd1.Stride;
+                var len = stride * b1.Height;
+
+                return memcmp(bd1Scan0, bd2Scan0, len) == 0;
             }
-            if (Equals(bmp1, bmp2))
+            finally
             {
-                return true;
+                b1.UnlockBits(bd1);
+                b2.UnlockBits(bd2);
             }
-            if (!bmp1.Size.Equals(bmp2.Size) || !bmp1.PixelFormat.Equals(bmp2.PixelFormat))
-            {
-                return false;
-            }
-
-            var bytes = bmp1.Width * bmp1.Height * (System.Drawing.Image.GetPixelFormatSize(bmp1.PixelFormat) / 8);
-
-            var result = true;
-            var b1Bytes = new byte[bytes];
-            var b2Bytes = new byte[bytes];
-
-            var bitmapData1 = bmp1.LockBits(new Rectangle(0, 0, bmp1.Width - 1, bmp1.Height - 1), ImageLockMode.ReadOnly, bmp1.PixelFormat);
-            var bitmapData2 = bmp2.LockBits(new Rectangle(0, 0, bmp2.Width - 1, bmp2.Height - 1), ImageLockMode.ReadOnly, bmp2.PixelFormat);
-
-            Marshal.Copy(bitmapData1.Scan0, b1Bytes, 0, bytes);
-            Marshal.Copy(bitmapData2.Scan0, b2Bytes, 0, bytes);
-
-            for (var n = 0; n <= bytes - 1; n++)
-            {
-                if (b1Bytes[n] != b2Bytes[n])
-                {
-                    result = false;
-                    break;
-                }
-            }
-
-            bmp1.UnlockBits(bitmapData1);
-            bmp2.UnlockBits(bitmapData2);
-
-            return result;
         }
     }
 }
