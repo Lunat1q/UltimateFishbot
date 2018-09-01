@@ -27,6 +27,7 @@ namespace UltimateFishBot.Forms
 
         public frmMain()
         {
+            ReloadHotkeys();
             InitializeComponent();
 
             m_manager = new Manager(this, new Progress<string>(text =>
@@ -47,10 +48,6 @@ namespace UltimateFishBot.Forms
             lblStatus.Text     = Translate.GetTranslate("frmMain", "LABEL_STOPPED");
             //this.Text          = "UltimateFishBot - v " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             /* Hide ? */
-            Random r = new Random();
-            Text = r.Next(1000, 1000000).ToString();
-            Text = Text.GetHashCode().ToString();
-
             
             ReloadHotkeys();
             await CheckStatus();
@@ -77,7 +74,7 @@ namespace UltimateFishBot.Forms
             }
             catch (Exception ex)
             {
-                lblWarn.Text = (Translate.GetTranslate("frmMain", "LABEL_COULD_NOT_CHECK_STATUS") + ex.ToString());
+                lblWarn.Text = Translate.GetTranslate("frmMain", "LABEL_COULD_NOT_CHECK_STATUS") + ex.Message;
             }
         }
 
