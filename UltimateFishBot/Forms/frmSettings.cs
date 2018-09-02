@@ -229,7 +229,7 @@ namespace UltimateFishBot.Forms
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
-            m_mainForm.ReloadHotkeys();
+            m_mainForm.ReloadHotKeys();
             this.Close();
         }
 
@@ -426,7 +426,7 @@ namespace UltimateFishBot.Forms
         private void SaveHotKeys()
         {
             Properties.Settings.Default.StartStopHotKey = m_hotkey;
-            m_mainForm.ReloadHotkeys();
+            m_mainForm.ReloadHotKeys();
         }
 
         private void txtHotKey_KeyDown(object sender, KeyEventArgs e)

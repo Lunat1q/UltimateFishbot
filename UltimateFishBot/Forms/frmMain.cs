@@ -5,25 +5,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using UltimateFishBot.Helpers;
 using UltimateFishBot.Properties;
+using UltimateFishBot.Servicing;
+using UltimateFishBot.Settings;
 
 namespace UltimateFishBot.Forms
 {
     public partial class frmMain : Form, IManagerEventHandler
     {
-        [Flags]
-        private enum KeyModifier
-        {
-            None = 0,
-            Alt = 1,
-            Control = 2,
-            Shift = 4
-        }
-
-        private enum HotKey
-        {
-            StartStop = 0,
-            CursorCapture = 1
-        }
+        private BotSettings _botSettings;
 
         public frmMain()
         {
@@ -47,9 +36,19 @@ namespace UltimateFishBot.Forms
             lblStatus.Text     = Translate.GetTranslate("frmMain", "LABEL_STOPPED");
             //this.Text          = "UltimateFishBot - v " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             /* Hide ? */
-            
-            ReloadHotkeys();
+            _botSettings = new BotSettings(Properties.Settings.Default);
+            ReloadHotKeys();
             await CheckStatus();
+        }
+
+        internal void ReloadHotKeys()
+        {
+            HotKeyController.ReloadHotkeys(_botSettings, _manager);
+        }
+
+        internal void UnregisterHotKeys()
+        {
+            HotKeyController.UnregisterHotKeys();
         }
 
         private async Task CheckStatus()
@@ -105,83 +104,6 @@ namespace UltimateFishBot.Forms
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        protected override void WndProc(ref Message m)
-        {
-            base.WndProc(ref m);
-
-            if (m.Msg == WM_HOTKEY) {
-                Keys key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);                  // The key of the hotkey that was pressed.
-                KeyModifier modifier = (KeyModifier)((int)m.LParam & 0xFFFF);       // The modifier of the hotkey that was pressed.
-                int id = m.WParam.ToInt32();                                        // The id of the hotkey that was pressed.
-
-                if (id == (int)HotKey.StartStop) {
-                    Task.Factory.StartNew(async () => {
-                        try {
-                            await _manager.StartOrStop();
-                        } catch (TaskCanceledException) {
-                            // Do nothing, cancellations are to be expected
-                        }
-                    },
-                    System.Threading.CancellationToken.None,
-                    TaskCreationOptions.None,
-                    TaskScheduler.FromCurrentSynchronizationContext());
-                } else if (id == (int)HotKey.CursorCapture) {
-                    _manager.CaptureCursor();
-                }
-            }
-        }
-
-        public void ReloadHotkeys() {
-            UnregisterHotKeys();
-
-            foreach (HotKey hotKey in (HotKey[])Enum.GetValues(typeof(HotKey))) {
-                Keys key = Keys.None;
-                try
-                {
-                    switch (hotKey)
-                    {
-                        case HotKey.StartStop: key = Settings.Default.StartStopHotKey; break;
-                        case HotKey.CursorCapture: key = Settings.Default.CursorCaptureHotKey; break;
-                        default: continue;
-                    }
-
-                    KeyModifier modifiers = RemoveAndReturnModifiers(ref key);
-                    Win32.RegisterHotKey(Handle, (int)hotKey, (int)modifiers, (int)key);
-
-                } catch(Exception)
-                {
-                    Console.WriteLine($@"Unable to load Hotkey: {key}");
-                }
-            }
-        }
-
-        public void UnregisterHotKeys() {
-            // Unregister all hotkeys before closing the form.
-            foreach (HotKey hotKey in (HotKey[])Enum.GetValues(typeof(HotKey)))
-                Win32.UnregisterHotKey(Handle, (int)hotKey);
-        }
-
-        private KeyModifier RemoveAndReturnModifiers(ref Keys key) {
-            var modifiers = KeyModifier.None;
-
-            modifiers |= RemoveAndReturnModifier(ref key, Keys.Shift, KeyModifier.Shift);
-            modifiers |= RemoveAndReturnModifier(ref key, Keys.Control, KeyModifier.Control);
-            modifiers |= RemoveAndReturnModifier(ref key, Keys.Alt, KeyModifier.Alt);
-
-            return modifiers;
-        }
-
-        private KeyModifier RemoveAndReturnModifier(ref Keys key, Keys keyModifier, KeyModifier modifier)
-        {
-            if ((key & keyModifier) != 0)
-            {
-                key &= ~keyModifier;
-                return modifier;
-            }
-
-            return KeyModifier.None;
         }
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)

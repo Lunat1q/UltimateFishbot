@@ -104,6 +104,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BodyParts\Ears.cs" />
@@ -113,15 +114,22 @@
     <Compile Include="Classes\BodyParts\Mouth.cs" />
     <Compile Include="Classes\BodyParts\T2S.cs" />
     <Compile Include="Classes\BotSession.cs" />
+    <Compile Include="Classes\Servicing\WinFormsMessaging.cs" />
+    <Compile Include="Classes\Settings\BotSettings.cs" />
     <Compile Include="Classes\Collections\LimitedCollection.cs" />
     <Compile Include="Classes\Extensions\BitmapExt.cs" />
     <Compile Include="Classes\FishingStats.cs" />
     <Compile Include="Classes\Fishing\BobbyLocation.cs" />
     <Compile Include="Classes\Fishing\BobbyLocationStorage.cs" />
+    <Compile Include="Classes\Helpers\HotKey.cs" />
     <Compile Include="Classes\Helpers\Win32.cs" />
     <Compile Include="Classes\IManagerEventHandler.cs" />
     <Compile Include="Classes\Manager.cs" />
     <Compile Include="Classes\NeededAction.cs" />
+    <Compile Include="Classes\Servicing\HotKeyController.cs" />
+    <Compile Include="Classes\Settings\HotKeySettings.cs" />
+    <Compile Include="Classes\Settings\KeyConverter.cs" />
+    <Compile Include="Classes\Settings\KeyStroke.cs" />
     <Compile Include="Classes\Translate.cs" />
     <Compile Include="Forms\about.cs">
       <SubType>Form</SubType>
