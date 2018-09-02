@@ -21,7 +21,12 @@ namespace UFBLauncher
         {
             var lastName = Properties.Settings.Default.UFBName;
 
+#if !DEBUG
             if (!RunBotSecretly(lastName)) RunBotSecretly(DefaultName);
+#else
+            RunBotSecretly(DefaultName);
+#endif
+
         }
 
         [DllImport("user32.dll")]

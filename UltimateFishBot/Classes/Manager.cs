@@ -51,6 +51,7 @@ namespace UltimateFishBot
         {
             _mManagerEventHandler    = managerEventHandler;
             var wowWindowPointer = Win32.FindWowWindow();
+#if !DEBUG
             while (wowWindowPointer == new IntPtr())
             {
                 var result = MessageBox.Show(
@@ -60,6 +61,7 @@ namespace UltimateFishBot
                     Environment.Exit(1);
                 wowWindowPointer = Win32.FindWowWindow();
             }
+#endif
             _eyes                   = new Eyes(wowWindowPointer);
             _hands                  = new Hands(wowWindowPointer);
             _ears                   = new Ears();

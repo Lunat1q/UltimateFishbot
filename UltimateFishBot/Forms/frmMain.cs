@@ -10,7 +10,6 @@ namespace UltimateFishBot.Forms
 {
     public partial class frmMain : Form, IManagerEventHandler
     {
-
         [Flags]
         private enum KeyModifier
         {
@@ -28,7 +27,6 @@ namespace UltimateFishBot.Forms
 
         public frmMain()
         {
-            ReloadHotkeys();
             InitializeComponent();
 
             _manager = new Manager(this, new Progress<string>(text =>
