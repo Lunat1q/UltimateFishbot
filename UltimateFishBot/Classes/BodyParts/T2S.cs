@@ -1,4 +1,5 @@
 ﻿using System.Speech.Synthesis;
+using UltimateFishBot.Settings;
 
 namespace UltimateFishBot.BodyParts
 {
@@ -10,7 +11,7 @@ namespace UltimateFishBot.BodyParts
 
         public T2S()
         {
-            _uset2S = Properties.Settings.Default.Txt2speech;
+            _uset2S = SettingsController.Instance.Txt2speech;
             _synthesizer.Volume = 60;  // 0...100
             _synthesizer.Rate   = 1;   // -10...10
         }

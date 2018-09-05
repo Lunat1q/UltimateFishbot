@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using UltimateFishBot.Settings;
 
 namespace UltimateFishBot
 {
@@ -19,7 +20,7 @@ namespace UltimateFishBot
                 try
                 {
                     // Example : ./Resources/English.xml
-                    doc.Load("./Resources/" + Properties.Settings.Default.Language + ".xml");
+                    doc.Load("./Resources/" + SettingsController.Instance.Language + ".xml");
                     _mElements = doc.DocumentElement;
                 }
                 catch (Exception ex)

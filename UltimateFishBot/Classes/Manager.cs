@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Serilog;
 using UltimateFishBot.BodyParts;
 using UltimateFishBot.Helpers;
+using UltimateFishBot.Settings;
 
 namespace UltimateFishBot
 {
@@ -187,34 +188,34 @@ namespace UltimateFishBot
 
         private void EnableTimers()
         {
-            if (Properties.Settings.Default.AutoLure)
+            if (SettingsController.Instance.AutoLure)
             {
                 AddNeededAction(NeededAction.Lure);
                 _lureTimer.Enabled = true;
             }
 
-            if (Properties.Settings.Default.AutoCharm)
+            if (SettingsController.Instance.AutoCharm)
             {
                 AddNeededAction(NeededAction.Charm);
                 _charmTimer.Enabled = true;
             }
 
-            if (Properties.Settings.Default.AutoRaft)
+            if (SettingsController.Instance.AutoRaft)
             {
                 AddNeededAction(NeededAction.Raft);
                 _raftTimer.Enabled = true;
             }
 
-            if (Properties.Settings.Default.AutoBait)
+            if (SettingsController.Instance.AutoBait)
             {
                 AddNeededAction(NeededAction.Bait);
                 _baitTimer.Enabled = true;
             }
 
-            if (Properties.Settings.Default.AutoHearth)
+            if (SettingsController.Instance.AutoHearth)
                 _hearthStoneTimer.Enabled = true;
 
-            if (Properties.Settings.Default.AntiAfk)
+            if (SettingsController.Instance.AntiAfk)
                 _antiAfkTimer.Enabled = true;
         }
 
@@ -256,12 +257,12 @@ namespace UltimateFishBot
 
         private void ResetTimers()
         {
-            _lureTimer.Interval        = Properties.Settings.Default.LureTime * Minute + 22 * Second;
-            _raftTimer.Interval        = Properties.Settings.Default.RaftTime * Minute;
-            _charmTimer.Interval       = Properties.Settings.Default.CharmTime * Minute;
-            _baitTimer.Interval        = Properties.Settings.Default.BaitTime * Minute;
-            _hearthStoneTimer.Interval = Properties.Settings.Default.HearthTime * Minute;
-            _antiAfkTimer.Interval     = Properties.Settings.Default.AntiAfkTime * Minute;
+            _lureTimer.Interval        = SettingsController.Instance.LureTime * Minute + 22 * Second;
+            _raftTimer.Interval        = SettingsController.Instance.RaftTime * Minute;
+            _charmTimer.Interval       = SettingsController.Instance.CharmTime * Minute;
+            _baitTimer.Interval        = SettingsController.Instance.BaitTime * Minute;
+            _hearthStoneTimer.Interval = SettingsController.Instance.HearthTime * Minute;
+            _antiAfkTimer.Interval     = SettingsController.Instance.AntiAfkTime * Minute;
         }
 
         private async Task Fish(BotSession session, CancellationToken cancellationToken)
@@ -296,7 +297,7 @@ namespace UltimateFishBot
                 uiUpdateCancelToken);
 
             var rnd = new Random();
-            _aFishWait = rnd.Next(Properties.Settings.Default.FishWaitLow, Properties.Settings.Default.FishWaitHigh);
+            _aFishWait = rnd.Next(SettingsController.Instance.Scan.FishWaitLow, SettingsController.Instance.Scan.FishWaitHigh);
             var fishHeard = await _ears.Listen(
                 _aFishWait,
                 cancellationToken);

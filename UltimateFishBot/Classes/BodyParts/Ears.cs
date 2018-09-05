@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UltimateFishBot.Collections;
+using UltimateFishBot.Settings;
 
 namespace UltimateFishBot.BodyParts
 {
@@ -26,11 +27,11 @@ namespace UltimateFishBot.BodyParts
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var sndDevEnum = new MMDeviceEnumerator();
-            _sndDevice = Properties.Settings.Default.AudioDevice != ""
-                ? sndDevEnum.GetDevice(Properties.Settings.Default.AudioDevice)
+            _sndDevice = SettingsController.Instance.AudioDevice != ""
+                ? sndDevEnum.GetDevice(SettingsController.Instance.AudioDevice)
                 : sndDevEnum.GetDefaultAudioEndpoint(EDataFlow.eRender, ERole.eMultimedia);
             Func<bool> heardFish;
-            if (Properties.Settings.Default.AverageSound)
+            if (SettingsController.Instance.AverageSound)
                 heardFish = ListenTimerTickAvg;
             else
                 heardFish = ListenTimerTick;
@@ -48,7 +49,7 @@ namespace UltimateFishBot.BodyParts
             // Get the current level
             var currentVolumnLevel = (int)(_sndDevice.AudioMeterInformation.MasterPeakValue * 100);
 
-            if (currentVolumnLevel >= Properties.Settings.Default.SplashLimit)
+            if (currentVolumnLevel >= SettingsController.Instance.SplashLimit)
                 return true;
 
             return false;
@@ -62,7 +63,7 @@ namespace UltimateFishBot.BodyParts
             var hear = false;
 
             // Determine if the current level is high enough to be a fish
-            if (currentVolumnLevel - avgVol >= Properties.Settings.Default.SplashLimit) {
+            if (currentVolumnLevel - avgVol >= SettingsController.Instance.SplashLimit) {
                 Serilog.Log.Information("Hear: {av},{cvl},{queue}", avgVol, currentVolumnLevel, _volumeQueue);
                 hear = true;
             }

@@ -23,7 +23,7 @@ namespace UltimateFishBot.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        /*[global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("15")]
         public int ScanningStepsLow {
@@ -706,5 +706,6 @@ namespace UltimateFishBot.Properties {
                 this["ScanningStepsHigh"] = value;
             }
         }
+        */
     }
 }

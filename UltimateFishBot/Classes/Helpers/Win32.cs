@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using UltimateFishBot.Settings;
 
 namespace UltimateFishBot.Helpers
 {
@@ -264,7 +265,7 @@ namespace UltimateFishBot.Helpers
         {
             if (sKeys != " ")
             {
-                if (Properties.Settings.Default.UseAltKey)
+                if (SettingsController.Instance.UseAltKey)
                     sKeys = "%(" + sKeys + ")"; // %(X) : Use the alt key
                 else
                     sKeys = "{" + sKeys + "}";  // {X} : Avoid UTF-8 errors (é, è, ...)
@@ -277,14 +278,14 @@ namespace UltimateFishBot.Helpers
         {
             long dWord = MakeDWord((_lastX - _lastRectX), (_lastY - _lastRectY));
 
-            if (Properties.Settings.Default.ShiftLoot)
+            if (SettingsController.Instance.ShiftLoot)
                 SendKeyboardAction(16, KeyState.Keydown);
 
             SendNotifyMessage(wow, WmRbuttondown, (UIntPtr)1, (IntPtr)dWord);
             Thread.Sleep(GetRandomDelay());
             SendNotifyMessage(wow, WmRbuttonup, (UIntPtr)1, (IntPtr)dWord);
 
-            if (Properties.Settings.Default.ShiftLoot)
+            if (SettingsController.Instance.ShiftLoot)
                 SendKeyboardAction(16, KeyState.Keyup);
         }
         public static void SendMouseDblRightClick(IntPtr wow)

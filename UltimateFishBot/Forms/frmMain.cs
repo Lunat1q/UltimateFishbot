@@ -12,8 +12,6 @@ namespace UltimateFishBot.Forms
 {
     public partial class frmMain : Form, IManagerEventHandler
     {
-        private BotSettings _botSettings;
-
         public frmMain()
         {
             InitializeComponent();
@@ -36,14 +34,13 @@ namespace UltimateFishBot.Forms
             lblStatus.Text     = Translate.GetTranslate("frmMain", "LABEL_STOPPED");
             //this.Text          = "UltimateFishBot - v " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             /* Hide ? */
-            _botSettings = new BotSettings(Properties.Settings.Default);
             ReloadHotKeys();
             await CheckStatus();
         }
 
         internal void ReloadHotKeys()
         {
-            HotKeyController.ReloadHotkeys(_botSettings, _manager);
+            HotKeyController.ReloadHotkeys(SettingsController.Instance, _manager);
         }
 
         internal void UnregisterHotKeys()

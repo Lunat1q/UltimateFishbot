@@ -110,6 +110,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\BodyParts\AntiAfkMoves.cs" />
     <Compile Include="Classes\BodyParts\Ears.cs" />
     <Compile Include="Classes\BodyParts\Eyes.cs" />
     <Compile Include="Classes\BodyParts\Hands.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="Classes\Settings\KeyConverter.cs" />
     <Compile Include="Classes\Settings\KeyStroke.cs" />
     <Compile Include="Classes\Settings\ScanSettings.cs" />
+    <Compile Include="Classes\Settings\SettingsController.cs" />
     <Compile Include="Classes\Translate.cs" />
     <Compile Include="Forms\about.cs">
       <SubType>Form</SubType>

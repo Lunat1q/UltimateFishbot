@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using UltimateFishBot.Settings;
 
 namespace UltimateFishBot.Forms
 {
@@ -189,8 +190,8 @@ namespace UltimateFishBot.Forms
             else
             {
 
-                Properties.Settings.Default.minScanXY = CurrentTopLeft;
-                Properties.Settings.Default.maxScanXY = CurrentBottomRight;
+                SettingsController.Instance.Scan.MinScanXY = CurrentTopLeft;
+                SettingsController.Instance.Scan.MaxScanXY = CurrentBottomRight;
                 settings.txtMinXY.Text = CurrentTopLeft.ToString();
                 settings.txtMaxXY.Text = CurrentBottomRight.ToString();
 

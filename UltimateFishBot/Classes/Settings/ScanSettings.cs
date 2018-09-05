@@ -33,18 +33,14 @@ namespace UltimateFishBot.Settings
         [DefaultValue("Alt+Shift+C")]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public string CursorCaptureHotKey { get; set; } = "Alt+Shift+C";
-
-        [DefaultValue(false)]
+        
+        [DefaultValue(true)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public bool RightClickCast { get; set; } = false;
+        public bool CheckCursor { get; set; } = true;
 
-        [DefaultValue(1800)]
+        [DefaultValue(21500)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public int CastingDelayHigh { get; set; } = 1800;
-
-        [DefaultValue(3000)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public int LootingDelayHigh { get; set; } = 3000;
+        public int FishWaitLow { get; set; } = 21500;
 
         [DefaultValue(22200)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]

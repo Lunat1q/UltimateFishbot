@@ -14,5 +14,31 @@ namespace UltimateFishBot.Settings
         {
             return $"{Modifiers} + {HotKey}";
         }
+
+        public KeyStroke()
+        {
+        }
+
+        public KeyStroke(Key hotKey, KeyModifier modifiers)
+        {
+            HotKey = hotKey;
+            Modifiers = modifiers;
+        }
+
+        public static implicit operator KeyStroke(string input)
+        {
+            var converter = new System.Windows.Input.KeyConverter();
+            var convertFromString = converter.ConvertFromString(input);
+            if (convertFromString != null)
+            {
+                var keys = (Key) convertFromString;
+            }
+            return new KeyStroke();
+        }
+
+        public static implicit operator string(KeyStroke stroke)
+        {
+            return stroke.ToString();
+        }
     }
 }

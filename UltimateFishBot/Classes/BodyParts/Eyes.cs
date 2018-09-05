@@ -10,6 +10,7 @@ using Serilog;
 using UltimateFishBot.Extensions;
 using UltimateFishBot.Fishing;
 using UltimateFishBot.Helpers;
+using UltimateFishBot.Settings;
 
 namespace UltimateFishBot.BodyParts
 {
@@ -47,17 +48,17 @@ namespace UltimateFishBot.BodyParts
         public async Task<BobbyLocation> LookForBobber(BotSession session, CancellationToken cancellationToken)
         {
             Win32.Rect scanArea;
-            if (!Properties.Settings.Default.customScanArea) {
+            if (!SettingsController.Instance.Scan.CustomScanArea) {
                 scanArea.Left = _wowRectangle.X + _wowRectangle.Width / 5;
                 scanArea.Right = _wowRectangle.X + _wowRectangle.Width / 5 * 4;
                 scanArea.Top = _wowRectangle.Y + _wowRectangle.Height / 4;
                 scanArea.Bottom = _wowRectangle.Y + _wowRectangle.Height / 4 * 3;
                 //Log.Information("Using default area");
             } else {
-                scanArea.Left = Properties.Settings.Default.minScanXY.X;
-                scanArea.Top = Properties.Settings.Default.minScanXY.Y;
-                scanArea.Right = Properties.Settings.Default.maxScanXY.X;
-                scanArea.Bottom = Properties.Settings.Default.maxScanXY.Y;
+                scanArea.Left = SettingsController.Instance.Scan.MinScanXY.X;
+                scanArea.Top = SettingsController.Instance.Scan.MinScanXY.Y;
+                scanArea.Right = SettingsController.Instance.Scan.MaxScanXY.X;
+                scanArea.Bottom = SettingsController.Instance.Scan.MaxScanXY.Y;
                 //Log.Information("Using custom area");
             }
             Log.Information($"Scanning area: {scanArea.Left} , {scanArea.Top} , {scanArea.Right} , {scanArea.Bottom} cs: {session.BobbyLocations.Count()}");
@@ -82,11 +83,11 @@ namespace UltimateFishBot.BodyParts
             
             var rnd = new Random();
             BobbyLocation loc;
-            _aScanningSteps = rnd.Next(Properties.Settings.Default.ScanningStepsLow, Properties.Settings.Default.ScanningStepsHigh);
-            if (Properties.Settings.Default.AlternativeRoute) {
-                loc = await LookForBobberSpiralImpl(session, scanArea, _aScanningSteps, Properties.Settings.Default.ScanningRetries, cancellationToken);
+            _aScanningSteps = rnd.Next(SettingsController.Instance.Scan.ScanningStepsLow, SettingsController.Instance.Scan.ScanningStepsHigh);
+            if (SettingsController.Instance.AlternativeRoute) {
+                loc = await LookForBobberSpiralImpl(session, scanArea, _aScanningSteps, SettingsController.Instance.Scan.ScanningRetries, cancellationToken);
             } else {
-                loc = await LookForBobberImpl(session, scanArea, _aScanningSteps, Properties.Settings.Default.ScanningRetries, cancellationToken);
+                loc = await LookForBobberImpl(session, scanArea, _aScanningSteps, SettingsController.Instance.Scan.ScanningRetries, cancellationToken);
             }
 
             Log.Information("Bobber scan finished. ({bx},{by})", loc?.X, loc?.Y);
@@ -233,7 +234,7 @@ namespace UltimateFishBot.BodyParts
 
             // Pause (give the OS a chance to change the cursor)
             var rnd = new Random();
-            _aScanningDelay = rnd.Next(Properties.Settings.Default.ScanningDelayLow, Properties.Settings.Default.ScanningDelayHigh);
+            _aScanningDelay = rnd.Next(SettingsController.Instance.Scan.ScanningDelayLow, SettingsController.Instance.Scan.ScanningDelayHigh);
             await Task.Delay(mpy*_aScanningDelay, cancellationToken);
 
             var actualCursor = Win32.GetCurrentCursor();
@@ -243,7 +244,7 @@ namespace UltimateFishBot.BodyParts
                 return false;
 
             // Compare the actual icon with our fishIcon if user want it
-            if (Properties.Settings.Default.CheckCursor) { 
+            if (SettingsController.Instance.Scan.CheckCursor) { 
                 if (Win32.GetCursorIcon(actualCursor).ImageCompare(Properties.Resources.fishIcon35x35)) { 
                     // We found a fish!
                     return true;

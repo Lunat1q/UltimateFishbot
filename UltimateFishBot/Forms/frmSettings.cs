@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using UltimateFishBot.BodyParts;
+using UltimateFishBot.Settings;
 
 namespace UltimateFishBot.Forms
 {
@@ -30,7 +32,7 @@ namespace UltimateFishBot.Forms
 
         private frmMain m_mainForm;
         private MMDevice m_SndDevice;
-        private Keys m_hotkey;
+        private KeyStroke _keyStroke;
 
         public frmSettings(frmMain mainForm)
         {
@@ -153,75 +155,75 @@ namespace UltimateFishBot.Forms
              */
 
             /// General
-            txtCastDelayLow.Text = Properties.Settings.Default.CastingDelayLow.ToString();
-            txtLootingDelayLow.Text = Properties.Settings.Default.LootingDelayLow.ToString();
-            txtFishWaitLow.Text = Properties.Settings.Default.FishWaitLow.ToString();
-            txtCastDelayHigh.Text = Properties.Settings.Default.CastingDelayHigh.ToString();
-            txtLootingDelayHigh.Text = Properties.Settings.Default.LootingDelayHigh.ToString();
-            txtFishWaitHigh.Text = Properties.Settings.Default.FishWaitHigh.ToString();
+            txtCastDelayLow.Text = SettingsController.Instance.CastingDelayLow.ToString();
+            txtLootingDelayLow.Text = SettingsController.Instance.LootingDelayLow.ToString();
+            txtFishWaitLow.Text = SettingsController.Instance.Scan.FishWaitLow.ToString();
+            txtCastDelayHigh.Text = SettingsController.Instance.CastingDelayHigh.ToString();
+            txtLootingDelayHigh.Text = SettingsController.Instance.LootingDelayHigh.ToString();
+            txtFishWaitHigh.Text = SettingsController.Instance.Scan.FishWaitHigh.ToString();
 
             /// Finding the Cursor
-            txtDelayLow.Text = Properties.Settings.Default.ScanningDelayLow.ToString();
-            txtScanStepsLow.Text = Properties.Settings.Default.ScanningStepsLow.ToString();
-            txtDelayHigh.Text = Properties.Settings.Default.ScanningDelayHigh.ToString();
-            txtScanStepsHigh.Text = Properties.Settings.Default.ScanningStepsHigh.ToString();
-            txtRetries.Text = Properties.Settings.Default.ScanningRetries.ToString();
-            cmbCompareIcon.Checked = Properties.Settings.Default.CheckCursor;
-            cmbAlternativeRoute.Checked = Properties.Settings.Default.AlternativeRoute;
-            ccHotKey.Text = new KeysConverter().ConvertToString(Properties.Settings.Default.CursorCaptureHotKey);
-            customAreaCheckbox.Checked = Properties.Settings.Default.customScanArea;
-            txtMinXY.Text = Properties.Settings.Default.minScanXY.ToString();
-            txtMaxXY.Text = Properties.Settings.Default.maxScanXY.ToString();
+            txtDelayLow.Text = SettingsController.Instance.Scan.ScanningDelayLow.ToString();
+            txtScanStepsLow.Text = SettingsController.Instance.Scan.ScanningStepsLow.ToString();
+            txtDelayHigh.Text = SettingsController.Instance.Scan.ScanningDelayHigh.ToString();
+            txtScanStepsHigh.Text = SettingsController.Instance.Scan.ScanningStepsHigh.ToString();
+            txtRetries.Text = SettingsController.Instance.Scan.ScanningRetries.ToString();
+            cmbCompareIcon.Checked = SettingsController.Instance.Scan.CheckCursor;
+            cmbAlternativeRoute.Checked = SettingsController.Instance.AlternativeRoute;
+            ccHotKey.Text = new KeysConverter().ConvertToString(SettingsController.Instance.Scan.CursorCaptureHotKey);
+            customAreaCheckbox.Checked = SettingsController.Instance.Scan.CustomScanArea;
+            txtMinXY.Text = SettingsController.Instance.Scan.MinScanXY.ToString();
+            txtMaxXY.Text = SettingsController.Instance.Scan.MaxScanXY.ToString();
 
             /// Hearing the Fish
-            txtSplash.Text = Properties.Settings.Default.SplashLimit.ToString();
+            txtSplash.Text = SettingsController.Instance.SplashLimit.ToString();
             LoadAudioDevices();
-            cbSoundAvg.Checked = Properties.Settings.Default.AverageSound;
+            cbSoundAvg.Checked = SettingsController.Instance.AverageSound;
 
             /// Premium Settings
-            txtProcName.Text = Properties.Settings.Default.ProcName;
-            cbAutoLure.Checked = Properties.Settings.Default.AutoLure;
-            cbHearth.Checked = Properties.Settings.Default.SwapGear;
-            cbAlt.Checked = Properties.Settings.Default.UseAltKey;
+            txtProcName.Text = SettingsController.Instance.ProcName;
+            cbAutoLure.Checked = SettingsController.Instance.AutoLure;
+            cbHearth.Checked = SettingsController.Instance.SwapGear;
+            cbAlt.Checked = SettingsController.Instance.UseAltKey;
 
-            txtFishKey.Text = Properties.Settings.Default.FishKey;
-            txtLureKey.Text = Properties.Settings.Default.LureKey;
-            txtHearthKey.Text = Properties.Settings.Default.HearthKey;
-            cbHearth.Checked = Properties.Settings.Default.AutoHearth;
-            txtHearthTime.Text = Properties.Settings.Default.HearthTime.ToString();
+            txtFishKey.Text = SettingsController.Instance.HotKeys.FishKey;
+            txtLureKey.Text = SettingsController.Instance.HotKeys.LureKey;
+            txtHearthKey.Text = SettingsController.Instance.HotKeys.HearthKey;
+            cbHearth.Checked = SettingsController.Instance.AutoHearth;
+            txtHearthTime.Text = SettingsController.Instance.HearthTime.ToString();
 
             // MoP Premium (Angler's Raft & Ancient Pandaren Fishing Charm)
-            txtCharmKey.Text = Properties.Settings.Default.CharmKey;
-            txtRaftKey.Text = Properties.Settings.Default.RaftKey;
-            cbApplyRaft.Checked = Properties.Settings.Default.AutoRaft;
-            cbApplyCharm.Checked = Properties.Settings.Default.AutoCharm;
-            cbShiftLoot.Checked = Properties.Settings.Default.ShiftLoot;
+            txtCharmKey.Text = SettingsController.Instance.HotKeys.CharmKey;
+            txtRaftKey.Text = SettingsController.Instance.HotKeys.RaftKey;
+            cbApplyRaft.Checked = SettingsController.Instance.AutoRaft;
+            cbApplyCharm.Checked = SettingsController.Instance.AutoCharm;
+            cbShiftLoot.Checked = SettingsController.Instance.ShiftLoot;
 
             // WoD Premium (Bait)
-            txtBaitKey1.Text = Properties.Settings.Default.BaitKey1;
-            txtBaitKey2.Text = Properties.Settings.Default.BaitKey2;
-            txtBaitKey3.Text = Properties.Settings.Default.BaitKey3;
-            txtBaitKey4.Text = Properties.Settings.Default.BaitKey4;
-            txtBaitKey5.Text = Properties.Settings.Default.BaitKey5;
-            txtBaitKey6.Text = Properties.Settings.Default.BaitKey6;
-            txtBaitKey7.Text = Properties.Settings.Default.BaitKey7;
-            cbAutoBait.Checked = Properties.Settings.Default.AutoBait;
-            cbCycleThroughBaitList.Checked = Properties.Settings.Default.CycleThroughBaitList;
+            txtBaitKey1.Text = SettingsController.Instance.HotKeys.BaitKey1;
+            txtBaitKey2.Text = SettingsController.Instance.HotKeys.BaitKey2;
+            txtBaitKey3.Text = SettingsController.Instance.HotKeys.BaitKey3;
+            txtBaitKey4.Text = SettingsController.Instance.HotKeys.BaitKey4;
+            txtBaitKey5.Text = SettingsController.Instance.HotKeys.BaitKey5;
+            txtBaitKey6.Text = SettingsController.Instance.HotKeys.BaitKey6;
+            txtBaitKey7.Text = SettingsController.Instance.HotKeys.BaitKey7;
+            cbAutoBait.Checked = SettingsController.Instance.AutoBait;
+            cbCycleThroughBaitList.Checked = SettingsController.Instance.CycleThroughBaitList;
 
             //Times
-            txtLureTime.Text = Properties.Settings.Default.LureTime.ToString();
-            txtHearthTime.Text = Properties.Settings.Default.HearthTime.ToString();
-            txtRaftTime.Text = Properties.Settings.Default.RaftTime.ToString();
-            txtCharmTime.Text = Properties.Settings.Default.CharmTime.ToString();
-            txtBaitTime.Text = Properties.Settings.Default.BaitTime.ToString();
+            txtLureTime.Text = SettingsController.Instance.LureTime.ToString();
+            txtHearthTime.Text = SettingsController.Instance.HearthTime.ToString();
+            txtRaftTime.Text = SettingsController.Instance.RaftTime.ToString();
+            txtCharmTime.Text = SettingsController.Instance.CharmTime.ToString();
+            txtBaitTime.Text = SettingsController.Instance.BaitTime.ToString();
 
             /// Anti Afk
-            cbAntiAfk.Checked = Properties.Settings.Default.AntiAfk;
-            txtAntiAfkTimer.Text = Properties.Settings.Default.AntiAfkTime.ToString();
-            cmbMovements.SelectedIndex = Properties.Settings.Default.AntiAfkMoves;
+            cbAntiAfk.Checked = SettingsController.Instance.AntiAfk;
+            txtAntiAfkTimer.Text = SettingsController.Instance.AntiAfkTime.ToString();
+            cmbMovements.SelectedIndex = (int)SettingsController.Instance.AntiAfkMoves;
 
             /// Languages
-            chkTxt2speech.Checked = Properties.Settings.Default.Txt2speech;
+            chkTxt2speech.Checked = SettingsController.Instance.Txt2speech;
             LoadLanguages();
 
 
@@ -237,81 +239,81 @@ namespace UltimateFishBot.Forms
         {
             MessageBox.Show("Some changes may start working only after application restart."); //Needs translation support
             /// General
-            Properties.Settings.Default.CastingDelayLow = int.Parse(txtCastDelayLow.Text);
-            Properties.Settings.Default.LootingDelayLow = int.Parse(txtLootingDelayLow.Text);
-            Properties.Settings.Default.FishWaitLow = int.Parse(txtFishWaitLow.Text);
-            Properties.Settings.Default.CastingDelayHigh = int.Parse(txtCastDelayHigh.Text);
-            Properties.Settings.Default.LootingDelayHigh = int.Parse(txtLootingDelayHigh.Text);
-            Properties.Settings.Default.FishWaitHigh = int.Parse(txtFishWaitHigh.Text);
+            SettingsController.Instance.CastingDelayLow = int.Parse(txtCastDelayLow.Text);
+            SettingsController.Instance.LootingDelayLow = int.Parse(txtLootingDelayLow.Text);
+            SettingsController.Instance.Scan.FishWaitLow = int.Parse(txtFishWaitLow.Text);
+            SettingsController.Instance.CastingDelayHigh = int.Parse(txtCastDelayHigh.Text);
+            SettingsController.Instance.LootingDelayHigh = int.Parse(txtLootingDelayHigh.Text);
+            SettingsController.Instance.Scan.FishWaitHigh = int.Parse(txtFishWaitHigh.Text);
 
             /// Finding the Cursor
-            Properties.Settings.Default.ScanningDelayLow = int.Parse(txtDelayLow.Text);
-            Properties.Settings.Default.ScanningDelayHigh = int.Parse(txtDelayHigh.Text);
-            Properties.Settings.Default.ScanningStepsLow = int.Parse(txtScanStepsLow.Text);
-            Properties.Settings.Default.ScanningStepsHigh = int.Parse(txtScanStepsHigh.Text);
-            Properties.Settings.Default.ScanningRetries = int.Parse(txtRetries.Text);
-            Properties.Settings.Default.CheckCursor = cmbCompareIcon.Checked;
-            Properties.Settings.Default.AlternativeRoute = cmbAlternativeRoute.Checked;
-            Properties.Settings.Default.customScanArea = customAreaCheckbox.Checked;
-            Properties.Settings.Default.CursorCaptureHotKey = (Keys)new KeysConverter().ConvertFromString(ccHotKey.Text);
+            SettingsController.Instance.Scan.ScanningDelayLow = int.Parse(txtDelayLow.Text);
+            SettingsController.Instance.Scan.ScanningDelayHigh = int.Parse(txtDelayHigh.Text);
+            SettingsController.Instance.Scan.ScanningStepsLow = int.Parse(txtScanStepsLow.Text);
+            SettingsController.Instance.Scan.ScanningStepsHigh = int.Parse(txtScanStepsHigh.Text);
+            SettingsController.Instance.Scan.ScanningRetries = int.Parse(txtRetries.Text);
+            SettingsController.Instance.Scan.CheckCursor = cmbCompareIcon.Checked;
+            SettingsController.Instance.AlternativeRoute = cmbAlternativeRoute.Checked;
+            SettingsController.Instance.Scan.CustomScanArea = customAreaCheckbox.Checked;
+            SettingsController.Instance.Scan.CursorCaptureHotKey = ccHotKey.Text;
             
 
             /// Hearing the Fish
-            Properties.Settings.Default.SplashLimit = int.Parse(txtSplash.Text);
-            Properties.Settings.Default.AudioDevice = (string)cmbAudio.SelectedValue;
-            Properties.Settings.Default.AverageSound = cbSoundAvg.Checked;
+            SettingsController.Instance.SplashLimit = int.Parse(txtSplash.Text);
+            SettingsController.Instance.AudioDevice = (string)cmbAudio.SelectedValue;
+            SettingsController.Instance.AverageSound = cbSoundAvg.Checked;
 
             /// Premium Settings
 
-            Properties.Settings.Default.ProcName = txtProcName.Text;
-            Properties.Settings.Default.AutoLure = cbAutoLure.Checked;
-            Properties.Settings.Default.SwapGear = cbHearth.Checked;
-            Properties.Settings.Default.UseAltKey = cbAlt.Checked;
-            Properties.Settings.Default.RightClickCast = cbDblRclickCast.Checked;
+            SettingsController.Instance.ProcName = txtProcName.Text;
+            SettingsController.Instance.AutoLure = cbAutoLure.Checked;
+            SettingsController.Instance.SwapGear = cbHearth.Checked;
+            SettingsController.Instance.UseAltKey = cbAlt.Checked;
+            SettingsController.Instance.RightClickCast = cbDblRclickCast.Checked;
 
-            Properties.Settings.Default.FishKey = txtFishKey.Text;
-            Properties.Settings.Default.LureKey = txtLureKey.Text;
-            Properties.Settings.Default.HearthKey = txtHearthKey.Text;
-            Properties.Settings.Default.AutoHearth = cbHearth.Checked;
+            SettingsController.Instance.HotKeys.FishKey = txtFishKey.Text;
+            SettingsController.Instance.HotKeys.LureKey = txtLureKey.Text;
+            SettingsController.Instance.HotKeys.HearthKey = txtHearthKey.Text;
+            SettingsController.Instance.AutoHearth = cbHearth.Checked;
 
             // MoP Premium (Angler's Raft & Ancient Pandaren Fishing Charm)
-            Properties.Settings.Default.CharmKey = txtCharmKey.Text;
-            Properties.Settings.Default.RaftKey = txtRaftKey.Text;
-            Properties.Settings.Default.AutoRaft = cbApplyRaft.Checked;
-            Properties.Settings.Default.AutoCharm = cbApplyCharm.Checked;
-            Properties.Settings.Default.ShiftLoot = cbShiftLoot.Checked;
+            SettingsController.Instance.HotKeys.CharmKey = txtCharmKey.Text;
+            SettingsController.Instance.HotKeys.RaftKey = txtRaftKey.Text;
+            SettingsController.Instance.AutoRaft = cbApplyRaft.Checked;
+            SettingsController.Instance.AutoCharm = cbApplyCharm.Checked;
+            SettingsController.Instance.ShiftLoot = cbShiftLoot.Checked;
 
             // WoD Premium (Bait)
-            Properties.Settings.Default.BaitKey1 = txtBaitKey1.Text;
-            Properties.Settings.Default.BaitKey2 = txtBaitKey2.Text;
-            Properties.Settings.Default.BaitKey3 = txtBaitKey3.Text;
-            Properties.Settings.Default.BaitKey4 = txtBaitKey4.Text;
-            Properties.Settings.Default.BaitKey5 = txtBaitKey5.Text;
-            Properties.Settings.Default.BaitKey6 = txtBaitKey6.Text;
-            Properties.Settings.Default.BaitKey7 = txtBaitKey7.Text;
-            Properties.Settings.Default.AutoBait = cbAutoBait.Checked;
-            Properties.Settings.Default.CycleThroughBaitList = cbCycleThroughBaitList.Checked;
+            SettingsController.Instance.HotKeys.BaitKey1 = txtBaitKey1.Text;
+            SettingsController.Instance.HotKeys.BaitKey2 = txtBaitKey2.Text;
+            SettingsController.Instance.HotKeys.BaitKey3 = txtBaitKey3.Text;
+            SettingsController.Instance.HotKeys.BaitKey4 = txtBaitKey4.Text;
+            SettingsController.Instance.HotKeys.BaitKey5 = txtBaitKey5.Text;
+            SettingsController.Instance.HotKeys.BaitKey6 = txtBaitKey6.Text;
+            SettingsController.Instance.HotKeys.BaitKey7 = txtBaitKey7.Text;
+            SettingsController.Instance.AutoBait = cbAutoBait.Checked;
+            SettingsController.Instance.CycleThroughBaitList = cbCycleThroughBaitList.Checked;
 
             SaveHotKeys();
 
             //Times
-            Properties.Settings.Default.LureTime = int.Parse(txtLureTime.Text);
-            Properties.Settings.Default.HearthTime = int.Parse(txtHearthTime.Text);
-            Properties.Settings.Default.RaftTime = int.Parse(txtRaftTime.Text);
-            Properties.Settings.Default.CharmTime = int.Parse(txtCharmTime.Text);
-            Properties.Settings.Default.BaitTime = int.Parse(txtBaitTime.Text);
+            SettingsController.Instance.LureTime = int.Parse(txtLureTime.Text);
+            SettingsController.Instance.HearthTime = int.Parse(txtHearthTime.Text);
+            SettingsController.Instance.RaftTime = int.Parse(txtRaftTime.Text);
+            SettingsController.Instance.CharmTime = int.Parse(txtCharmTime.Text);
+            SettingsController.Instance.BaitTime = int.Parse(txtBaitTime.Text);
 
             /// Anti Afk
-            Properties.Settings.Default.AntiAfk = cbAntiAfk.Checked;
-            Properties.Settings.Default.AntiAfkTime = int.Parse(txtAntiAfkTimer.Text);
-            Properties.Settings.Default.AntiAfkMoves = cmbMovements.SelectedIndex;
+            SettingsController.Instance.AntiAfk = cbAntiAfk.Checked;
+            SettingsController.Instance.AntiAfkTime = int.Parse(txtAntiAfkTimer.Text);
+            SettingsController.Instance.AntiAfkMoves = (AntiAfkMoves)cmbMovements.SelectedIndex;
 
             /// Language
-            Properties.Settings.Default.Txt2speech = chkTxt2speech.Checked;
-            if ((string)cmbLanguage.SelectedItem != Properties.Settings.Default.Language)
+            SettingsController.Instance.Txt2speech = chkTxt2speech.Checked;
+            if ((string)cmbLanguage.SelectedItem != SettingsController.Instance.Language)
             {
-                Properties.Settings.Default.Language = (string)cmbLanguage.SelectedItem;
-                Properties.Settings.Default.Save();
+                SettingsController.Instance.Language = (string)cmbLanguage.SelectedItem;
+                SettingsController.Save();
 
                 MessageBox.Show(Translate.GetTranslate("frmSettings", "LABEL_LANGUAGE_CHANGE"),
                                 Translate.GetTranslate("frmSettings", "TITLE_LANGUAGE_CHANGE"));
@@ -321,7 +323,7 @@ namespace UltimateFishBot.Forms
             }
             else
             {
-                Properties.Settings.Default.Save();
+                SettingsController.Save();
                 this.Close();
             }
 
@@ -357,7 +359,7 @@ namespace UltimateFishBot.Forms
             cmbAudio.DisplayMember = "Item1";
             cmbAudio.ValueMember = "Item2";
             cmbAudio.DataSource = audioDevices;
-            cmbAudio.SelectedValue = Properties.Settings.Default.AudioDevice;
+            cmbAudio.SelectedValue = SettingsController.Instance.AudioDevice;
         }
 
         private void LoadLanguages()
@@ -372,7 +374,7 @@ namespace UltimateFishBot.Forms
                 cmbLanguage.Items.Add(tmpFile);
             }
 
-            cmbLanguage.SelectedItem = Properties.Settings.Default.Language;
+            cmbLanguage.SelectedItem = SettingsController.Instance.Language;
         }
 
         private void LoadAntiAfkMovements()
@@ -418,21 +420,21 @@ namespace UltimateFishBot.Forms
 
         private void LoadHotKeys()
         {
-            m_hotkey = Properties.Settings.Default.StartStopHotKey;
-            txtHotKey.Text = new KeysConverter().ConvertToString(m_hotkey);
+            _keyStroke = SettingsController.Instance.HotKeys.StartStopKey;
+            txtHotKey.Text = SettingsController.Instance.HotKeys.StartStopKey;
             m_mainForm.UnregisterHotKeys();
         }
 
         private void SaveHotKeys()
         {
-            Properties.Settings.Default.StartStopHotKey = m_hotkey;
+            SettingsController.Instance.HotKeys.StartStopKey = _keyStroke;
             m_mainForm.ReloadHotKeys();
         }
 
         private void txtHotKey_KeyDown(object sender, KeyEventArgs e)
         {
-            m_hotkey = e.KeyData;
-            txtHotKey.Text = new KeysConverter().ConvertToString(m_hotkey);
+            _keyStroke = e.KeyData.ToKeyStroke();
+            txtHotKey.Text = _keyStroke;
         }
 
         private void customAreaCheckbox_CheckedChanged(object sender, EventArgs e)
@@ -463,7 +465,7 @@ namespace UltimateFishBot.Forms
         {
             if (MessageBox.Show(Translate.GetTranslate("frmSettings", "RESET_MESSAGE"), Translate.GetTranslate("frmSettings", "RESET_TITLE"), MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-                Properties.Settings.Default.Reset();
+                SettingsController.Reset();
                 Application.Restart();
             }
         }

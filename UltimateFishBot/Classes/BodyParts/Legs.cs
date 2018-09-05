@@ -3,29 +3,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using UltimateFishBot.Helpers;
+using UltimateFishBot.Settings;
 
 namespace UltimateFishBot.BodyParts
 {
     internal class Legs
     {
-        private enum Path
-        {
-            FrontBack = 0,
-            LeftRight = 1,
-            Jump       = 2
-        }
-
         public async Task DoMovement(T2S t2S, CancellationToken cancellationToken)
         {
-            switch ((Path)Properties.Settings.Default.AntiAfkMoves)
+            switch (SettingsController.Instance.AntiAfkMoves)
             {
-                case Path.FrontBack:
+                case AntiAfkMoves.FrontBack:
                     await MovePath(new[] { Keys.Up, Keys.Down }, cancellationToken);
                     break;
-                case Path.LeftRight:
+                case AntiAfkMoves.LeftRight:
                     await MovePath(new[] { Keys.Left, Keys.Right }, cancellationToken);
                     break;
-                case Path.Jump:
+                case AntiAfkMoves.Jump:
                     await MovePath(new[] { Keys.Space }, cancellationToken);
                     await Task.Delay(500, cancellationToken);
                     break;

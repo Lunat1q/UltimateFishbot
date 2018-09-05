@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Serilog;
 using UltimateFishBot.Helpers;
+using UltimateFishBot.Settings;
 
 namespace UltimateFishBot.BodyParts
 {
@@ -33,26 +34,26 @@ namespace UltimateFishBot.BodyParts
         {
             _mBaitKeys = new[]
             {
-                Properties.Settings.Default.BaitKey1,
-                Properties.Settings.Default.BaitKey2,
-                Properties.Settings.Default.BaitKey3,
-                Properties.Settings.Default.BaitKey4,
-                Properties.Settings.Default.BaitKey5,
-                Properties.Settings.Default.BaitKey6,
-                Properties.Settings.Default.BaitKey7,
+                SettingsController.Instance.HotKeys.BaitKey1,
+                SettingsController.Instance.HotKeys.BaitKey2,
+                SettingsController.Instance.HotKeys.BaitKey3,
+                SettingsController.Instance.HotKeys.BaitKey4,
+                SettingsController.Instance.HotKeys.BaitKey5,
+                SettingsController.Instance.HotKeys.BaitKey6,
+                SettingsController.Instance.HotKeys.BaitKey7,
             };
         }
 
         public async Task Cast(CancellationToken token)
         {
-            if (Properties.Settings.Default.RightClickCast)  {
+            if (SettingsController.Instance.RightClickCast)  {
                 Win32.SendMouseDblRightClick(_wow);
             } else {
-                Win32.SendKey(Properties.Settings.Default.FishKey);
-                Log.Information("Sent key: " + Properties.Settings.Default.FishKey);
+                Win32.SendKey(SettingsController.Instance.HotKeys.FishKey);
+                Log.Information("Sent key: " + SettingsController.Instance.HotKeys.FishKey);
             }
             var rnd = new Random();
-            _aCastingDelay = rnd.Next(Properties.Settings.Default.CastingDelayLow, Properties.Settings.Default.CastingDelayHigh);
+            _aCastingDelay = rnd.Next(SettingsController.Instance.CastingDelayLow, SettingsController.Instance.CastingDelayHigh);
             await Task.Delay(_aCastingDelay, token);
         }
 
@@ -61,7 +62,7 @@ namespace UltimateFishBot.BodyParts
             Win32.SendMouseClick(_wow);
             Log.Information("Send Loot.");
             Random rnd = new Random();
-            _aLootingDelay = rnd.Next(Properties.Settings.Default.LootingDelayLow, Properties.Settings.Default.LootingDelayHigh);
+            _aLootingDelay = rnd.Next(SettingsController.Instance.LootingDelayLow, SettingsController.Instance.LootingDelayHigh);
             await Task.Delay(_aLootingDelay);
         }
 
@@ -79,28 +80,28 @@ namespace UltimateFishBot.BodyParts
             {
                 case NeededAction.HearthStone:
                     {
-                        actionKey = Properties.Settings.Default.HearthKey;
+                        actionKey = SettingsController.Instance.HotKeys.HearthKey;
                         mouth.Say(Translate.GetTranslate("manager", "LABEL_HEARTHSTONE"));
                         sleepTime = 0;
                         break;
                     }
                 case NeededAction.Lure:
                     {
-                        actionKey = Properties.Settings.Default.LureKey;
+                        actionKey = SettingsController.Instance.HotKeys.LureKey;
                         mouth.Say(Translate.GetTranslate("manager", "LABEL_APPLY_LURE"));
                         sleepTime = 3;
                         break;
                     }
                 case NeededAction.Charm:
                     {
-                        actionKey = Properties.Settings.Default.CharmKey;
+                        actionKey = SettingsController.Instance.HotKeys.CharmKey;
                         mouth.Say(Translate.GetTranslate("manager", "LABEL_APPLY_CHARM"));
                         sleepTime = 3;
                         break;
                     }
                 case NeededAction.Raft:
                     {
-                        actionKey = Properties.Settings.Default.RaftKey;
+                        actionKey = SettingsController.Instance.HotKeys.RaftKey;
                         mouth.Say(Translate.GetTranslate("manager", "LABEL_APPLY_RAFT"));
                         sleepTime = 2;
                         break;
@@ -109,7 +110,7 @@ namespace UltimateFishBot.BodyParts
                     {
                         int baitIndex = 0;
 
-                        if (Properties.Settings.Default.CycleThroughBaitList)
+                        if (SettingsController.Instance.CycleThroughBaitList)
                         {
                             if (_mBaitIndex >= 6)
                                 _mBaitIndex = 0;
