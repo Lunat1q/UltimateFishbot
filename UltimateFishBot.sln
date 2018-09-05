@@ -5,12 +5,9 @@ VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimateFishBot", "UltimateFishBot\UltimateFishBot.csproj", "{E4705D9F-56CD-48CB-863B-4363D03C8424}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FEE29BD6-2EA3-4540-863B-2CBDAD70A553}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UFBLauncher", "UFBLauncher\UFBLauncher.csproj", "{6529FB5B-D58F-4E12-AA91-5C694E44B142}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiqUtils", "TiqUtils\TiqUtils\TiqUtils.csproj", "{ADD36AFD-5E81-40E7-93F8-381CF03C5FD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +34,14 @@ Global
 		{6529FB5B-D58F-4E12-AA91-5C694E44B142}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6529FB5B-D58F-4E12-AA91-5C694E44B142}.Release|x64.ActiveCfg = Release|Any CPU
 		{6529FB5B-D58F-4E12-AA91-5C694E44B142}.Release|x64.Build.0 = Release|Any CPU
+		{ADD36AFD-5E81-40E7-93F8-381CF03C5FD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADD36AFD-5E81-40E7-93F8-381CF03C5FD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADD36AFD-5E81-40E7-93F8-381CF03C5FD2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ADD36AFD-5E81-40E7-93F8-381CF03C5FD2}.Debug|x64.Build.0 = Debug|Any CPU
+		{ADD36AFD-5E81-40E7-93F8-381CF03C5FD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADD36AFD-5E81-40E7-93F8-381CF03C5FD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADD36AFD-5E81-40E7-93F8-381CF03C5FD2}.Release|x64.ActiveCfg = Release|Any CPU
+		{ADD36AFD-5E81-40E7-93F8-381CF03C5FD2}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

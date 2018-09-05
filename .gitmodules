@@ -1,0 +1,4 @@
+[submodule "TiqUtils"]
+	path = TiqUtils
+	url = https://github.com/Lunat1q/TiqUtils
+	branch = master
