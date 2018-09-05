@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net.Mime;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using TiqUtils.TypeSpeccific;
+using UltimateFishBot.Helpers;
 
 namespace UFBLauncher
 {
@@ -39,13 +34,17 @@ namespace UFBLauncher
             var ufbExeFile = new FileInfo(currentPath);
             if (ufbExeFile.Exists)
             {
-                var newName = StringUtils.RandomString(12) + ExeExt;
+                var newName = UtilsProxy.RandomString(12) + ExeExt;
                 var newPath = Path.Combine(Path.GetDirectoryName(currentPath), newName);
                 ufbExeFile.MoveTo(newPath);
                 Properties.Settings.Default.UFBName = newName;
                 Properties.Settings.Default.Save();
                 var p = Process.Start(ufbExeFile.FullName);
-                Thread.Sleep(1500);
+                while (p.MainWindowHandle == IntPtr.Zero)
+                {
+                    Thread.Sleep(1500);
+                }
+                p.WaitForInputIdle();
                 SetWindowText(p.MainWindowHandle, newName);
                 return true;
             }

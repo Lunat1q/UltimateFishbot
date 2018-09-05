@@ -118,6 +118,7 @@
     <Compile Include="Classes\BodyParts\Mouth.cs" />
     <Compile Include="Classes\BodyParts\T2S.cs" />
     <Compile Include="Classes\BotSession.cs" />
+    <Compile Include="Classes\Helpers\UtilsProxy.cs" />
     <Compile Include="Classes\Servicing\WinFormsMessaging.cs" />
     <Compile Include="Classes\Settings\BotSettings.cs" />
     <Compile Include="Classes\Collections\LimitedCollection.cs" />

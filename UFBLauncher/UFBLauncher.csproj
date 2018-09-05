@@ -58,10 +58,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TiqUtils\TiqUtils\TiqUtils.csproj">
-      <Project>{add36afd-5e81-40e7-93f8-381cf03c5fd2}</Project>
-      <Name>TiqUtils</Name>
-    </ProjectReference>
     <ProjectReference Include="..\UltimateFishBot\UltimateFishBot.csproj">
       <Project>{e4705d9f-56cd-48cb-863b-4363d03c8424}</Project>
       <Name>UltimateFishBot</Name>
