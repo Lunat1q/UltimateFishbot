@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 using Serilog;
 using UltimateFishBot.Forms;
+using UltimateFishBot.Settings;
 
 namespace UltimateFishBot
 {
@@ -16,10 +18,9 @@ namespace UltimateFishBot
         private static void Main()
         {
             Console.Out.WriteLine("Hash dodge");
-
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.ColoredConsole()
-                .WriteTo.File("ufb.log")
+                .WriteTo.File(Path.Combine(SettingsController.AssemblyDirectory, "ufb.log"))
                 .WriteTo.Trace()
                 .CreateLogger();
             Log.Information("UltimateFishBot Started");

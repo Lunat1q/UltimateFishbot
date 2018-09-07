@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using UltimateFishBot.Helpers;
 
 namespace UFBLauncher
 {
@@ -12,6 +12,7 @@ namespace UFBLauncher
     {
         private const string ExeExt = ".exe";
         private const string DefaultName = "UltimateFishBot.exe";
+        private static readonly Random Random = new Random();
 
         static void Main(string[] args)
         {
@@ -34,7 +35,7 @@ namespace UFBLauncher
             var ufbExeFile = new FileInfo(currentPath);
             if (ufbExeFile.Exists)
             {
-                var newName = UtilsProxy.RandomString(12) + ExeExt;
+                var newName = RandomString(12) + ExeExt;
                 var newPath = Path.Combine(Path.GetDirectoryName(currentPath), newName);
                 ufbExeFile.MoveTo(newPath);
                 Properties.Settings.Default.UFBName = newName;
@@ -49,6 +50,12 @@ namespace UFBLauncher
                 return true;
             }
             return false;
+        }
+
+        private static string RandomString(int length, string chars = "abcdefghijklmnopqrstuvwxyz0123456789")
+        {
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
     }
 }
