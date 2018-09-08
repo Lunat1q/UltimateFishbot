@@ -237,7 +237,6 @@ namespace UltimateFishBot.Forms
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Some changes may start working only after application restart."); //Needs translation support
             /// General
             SettingsController.Instance.CastingDelayLow = int.Parse(txtCastDelayLow.Text);
             SettingsController.Instance.LootingDelayLow = int.Parse(txtLootingDelayLow.Text);
@@ -319,7 +318,7 @@ namespace UltimateFishBot.Forms
                                 Translate.GetTranslate("frmSettings", "TITLE_LANGUAGE_CHANGE"));
 
                 Thread.Sleep(1000);
-                Application.Restart();
+                MessageBox.Show("Some changes may start working only after application restart."); //Needs translation support
             }
             else
             {
@@ -364,14 +363,12 @@ namespace UltimateFishBot.Forms
 
         private void LoadLanguages()
         {
-            string[] languageFiles = Directory.GetFiles("./Resources/", "*.xml");
+            string[] languageFiles = Directory.GetFiles(Path.Combine(SettingsController.AssemblyDirectory, "Resources"), "*.xml");
             cmbLanguage.Items.Clear();
 
-            foreach (string file in languageFiles)
+            foreach (var file in languageFiles)
             {
-                string tmpFile = file.Substring(12); // Remove the "./Resources/" part
-                tmpFile = tmpFile.Substring(0, tmpFile.Length - 4); // Remove the  ".xml" part
-                cmbLanguage.Items.Add(tmpFile);
+                cmbLanguage.Items.Add(Path.GetFileNameWithoutExtension(file));
             }
 
             cmbLanguage.SelectedItem = SettingsController.Instance.Language;

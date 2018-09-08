@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -131,31 +132,31 @@ namespace UltimateFishBot.Helpers
         public static Bitmap CaptureWindow(IntPtr handle)
         {
             // get te hDC of the target window
-            IntPtr hdcSrc = GetWindowDC(handle);
+            var hdcSrc = GetWindowDC(handle);
             // get the size
-            Rect windowRect = new Rect();
+            var windowRect = new Rect();
             GetWindowRect(handle, ref windowRect);
 
-            Rect clientRect = new Rect();
+            var clientRect = new Rect();
             GetClientRect(handle, out clientRect);
 
 
-            Point point = new Point { x = 0, y = 0 };
+            var point = new Point { x = 0, y = 0 };
             ClientToScreen(handle, ref point);
 
-            int x = point.x - windowRect.Left;
-            int y = point.y - windowRect.Top;
-            int width = (clientRect.Right - clientRect.Left);
-            int height = (clientRect.Bottom - clientRect.Top);
+            var x = point.x - windowRect.Left;
+            var y = point.y - windowRect.Top;
+            var width = (clientRect.Right - clientRect.Left);
+            var height = (clientRect.Bottom - clientRect.Top);
 
 
             // create a device context we can copy to
-            IntPtr hdcDest = CreateCompatibleDC(hdcSrc);
+            var hdcDest = CreateCompatibleDC(hdcSrc);
             // create a bitmap we can copy it to,
             // using GetDeviceCaps to get the width/height
-            IntPtr hBitmap = CreateCompatibleBitmap(hdcSrc, width, height);
+            var hBitmap = CreateCompatibleBitmap(hdcSrc, width, height);
             // select the bitmap object
-            IntPtr hOld = SelectObject(hdcDest, hBitmap);
+            var hOld = SelectObject(hdcDest, hBitmap);
             // bitblt over
             BitBlt(hdcDest, 0, 0, width, height, hdcSrc, x, y, Srccopy);
             // restore selection
@@ -164,7 +165,7 @@ namespace UltimateFishBot.Helpers
             DeleteDC(hdcDest);
             ReleaseDC(handle, hdcSrc);
             // get a .NET image object for it
-            Bitmap img = Image.FromHbitmap(hBitmap);
+            var img = Image.FromHbitmap(hBitmap);
             // free up the Bitmap object
             DeleteObject(hBitmap);
             return img;
@@ -172,9 +173,9 @@ namespace UltimateFishBot.Helpers
 
         public static Rectangle GetWowRectangle(IntPtr wow)
         {
-            Rect win32ApiRect = new Rect();
+            var win32ApiRect = new Rect();
             GetWindowRect(wow, ref win32ApiRect);
-            Rectangle myRect = new Rectangle();
+            var myRect = new Rectangle();
             myRect.X = win32ApiRect.Left;
             myRect.Y = win32ApiRect.Top;
             myRect.Width = (win32ApiRect.Right - win32ApiRect.Left);
@@ -189,15 +190,26 @@ namespace UltimateFishBot.Helpers
 
         public static IntPtr FindWowWindow()
         {
-            Process[] processlist = Process.GetProcesses();
-            foreach(Process process in processlist)
+            var result = GetProcessByName(SettingsController.Instance.ProcName);
+            if (result != IntPtr.Zero)
             {
-                if(process.MainWindowTitle.ToUpper().Equals("WORLD OF WARCRAFT"))
+                return result;
+            }
+            var processlist = Process.GetProcesses();
+            foreach(var process in processlist)
+            {
+                if(process.MainWindowTitle.Equals("WORLD OF WARCRAFT", StringComparison.OrdinalIgnoreCase))
                 {
                     return process.MainWindowHandle;
                 }
             }
-            return new IntPtr();
+            return IntPtr.Zero;
+        }
+
+        public static IntPtr GetProcessByName(string name)
+        {
+            var process = Process.GetProcessesByName(SettingsController.Instance.ProcName).FirstOrDefault();
+            return process?.MainWindowHandle ?? IntPtr.Zero;
         }
 
         public static Bitmap GetCursorIcon(CursorInfo actualCursor, int width = 35, int height = 35)
@@ -207,7 +219,7 @@ namespace UltimateFishBot.Helpers
             try
             {
                 actualCursorIcon = new Bitmap(width, height);
-                Graphics g = Graphics.FromImage(actualCursorIcon);
+                var g = Graphics.FromImage(actualCursorIcon);
                 Win32.DrawIcon(g.GetHdc(), 0, 0, actualCursor.hCursor);
                 g.ReleaseHdc();
             }
@@ -242,12 +254,12 @@ namespace UltimateFishBot.Helpers
 
         public static CursorInfo GetNoFishCursor(IntPtr wow)
         {
-            Rectangle woWRect = Win32.GetWowRectangle(wow);
+            var woWRect = Win32.GetWowRectangle(wow);
             Win32.MoveMouse((woWRect.X + 10), (woWRect.Y + 45));
             _lastRectX = woWRect.X;
             _lastRectY = woWRect.Y;
             Thread.Sleep(15);
-            CursorInfo myInfo = new CursorInfo();
+            var myInfo = new CursorInfo();
             myInfo.cbSize = Marshal.SizeOf(myInfo);
             GetCursorInfo(out myInfo);
             return myInfo;
@@ -255,7 +267,7 @@ namespace UltimateFishBot.Helpers
 
         public static CursorInfo GetCurrentCursor()
         {
-            CursorInfo myInfo = new CursorInfo();
+            var myInfo = new CursorInfo();
             myInfo.cbSize = Marshal.SizeOf(myInfo);
             GetCursorInfo(out myInfo);
             return myInfo;
@@ -276,7 +288,7 @@ namespace UltimateFishBot.Helpers
 
         public static void SendMouseClick(IntPtr wow)
         {
-            long dWord = MakeDWord((_lastX - _lastRectX), (_lastY - _lastRectY));
+            var dWord = MakeDWord((_lastX - _lastRectX), (_lastY - _lastRectY));
 
             if (SettingsController.Instance.ShiftLoot)
                 SendKeyboardAction(16, KeyState.Keydown);
@@ -291,8 +303,8 @@ namespace UltimateFishBot.Helpers
         public static void SendMouseDblRightClick(IntPtr wow)
         {
             //long dWord = MakeDWord((LastX - LastRectX), (LastY - LastRectY));
-            Rectangle wowRect = Win32.GetWowRectangle(wow);
-            long dWord = MakeDWord( (wowRect.Width/2), (wowRect.Height/2) );
+            var wowRect = Win32.GetWowRectangle(wow);
+            var dWord = MakeDWord( (wowRect.Width/2), (wowRect.Height/2) );
             SendNotifyMessage(wow, WmRbuttondown, (UIntPtr)1, (IntPtr)dWord);
             Thread.Sleep(GetRandomDelay());
             SendNotifyMessage(wow, WmRbuttonup, (UIntPtr)1, (IntPtr)dWord);
