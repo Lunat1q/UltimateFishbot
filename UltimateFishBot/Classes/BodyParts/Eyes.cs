@@ -16,11 +16,13 @@ namespace UltimateFishBot.BodyParts
 {
     internal class Eyes
     {
+        private const int Fixr = 24;
+
         private Win32.CursorInfo _noFishCursor;
         private IntPtr _wow;
         private Bitmap _capturedCursorIcon;
         private Bitmap _background;
-        private Rectangle _wowRectangle;
+        private Win32.Rect _scanArea;
 
         private int _aScanningSteps;
         private int _aScanningDelay;
@@ -32,9 +34,26 @@ namespace UltimateFishBot.BodyParts
         public void SetWow(IntPtr wowWindow) {
             _wow = wowWindow;
             _noFishCursor = Win32.GetNoFishCursor(_wow);
-            _wowRectangle = Win32.GetWowRectangle(_wow);
             if (System.IO.File.Exists("capturedcursor.bmp")) {
                 _capturedCursorIcon = new Bitmap("capturedcursor.bmp", true);
+            }
+            
+            if (!SettingsController.Instance.Scan.CustomScanArea)
+            {
+                var wowRectangle = Win32.GetWowRectangle(_wow);
+                _scanArea.Left = wowRectangle.X + wowRectangle.Width / 5;
+                _scanArea.Right = wowRectangle.X + wowRectangle.Width / 5 * 4;
+                _scanArea.Top = wowRectangle.Y + wowRectangle.Height / 4;
+                _scanArea.Bottom = wowRectangle.Y + wowRectangle.Height / 4 * 3;
+                //Log.Information("Using default area");
+            }
+            else
+            {
+                _scanArea.Left = SettingsController.Instance.Scan.MinScanXY.X;
+                _scanArea.Top = SettingsController.Instance.Scan.MinScanXY.Y;
+                _scanArea.Right = SettingsController.Instance.Scan.MaxScanXY.X;
+                _scanArea.Bottom = SettingsController.Instance.Scan.MaxScanXY.Y;
+                //Log.Information("Using custom area");
             }
 
         }
@@ -47,22 +66,15 @@ namespace UltimateFishBot.BodyParts
 
         public async Task<BobbyLocation> LookForBobber(BotSession session, CancellationToken cancellationToken)
         {
-            Win32.Rect scanArea;
-            if (!SettingsController.Instance.Scan.CustomScanArea) {
-                scanArea.Left = _wowRectangle.X + _wowRectangle.Width / 5;
-                scanArea.Right = _wowRectangle.X + _wowRectangle.Width / 5 * 4;
-                scanArea.Top = _wowRectangle.Y + _wowRectangle.Height / 4;
-                scanArea.Bottom = _wowRectangle.Y + _wowRectangle.Height / 4 * 3;
-                //Log.Information("Using default area");
-            } else {
-                scanArea.Left = SettingsController.Instance.Scan.MinScanXY.X;
-                scanArea.Top = SettingsController.Instance.Scan.MinScanXY.Y;
-                scanArea.Right = SettingsController.Instance.Scan.MaxScanXY.X;
-                scanArea.Bottom = SettingsController.Instance.Scan.MaxScanXY.Y;
-                //Log.Information("Using custom area");
+            Log.Information($"Scanning area: {_scanArea.Left} , {_scanArea.Top} , {_scanArea.Right} , {_scanArea.Bottom} cs: {session.BobbyLocations.Count()}");
+
+            var startLocation = new BobbyLocation(Win32.GetCurrentCursor().ptScreenPos);
+            if (await MoveMouseAndCheckCursor(startLocation.X, startLocation.X, cancellationToken, 2))
+            {
+                Log.Information("Bobber imagescan hit on original location. ({bx},{by})", startLocation.X, startLocation.X);
+                return startLocation;
             }
-            Log.Information($"Scanning area: {scanArea.Left} , {scanArea.Top} , {scanArea.Right} , {scanArea.Bottom} cs: {session.BobbyLocations.Count()}");
-            
+
             foreach (var dp in PointOfScreenDifferences()) {
                 if (await MoveMouseAndCheckCursor(dp.X, dp.X, cancellationToken,2)) {
                     Log.Information("Bobber imagescan hit. ({bx},{by})", dp.X, dp.X);
@@ -85,9 +97,9 @@ namespace UltimateFishBot.BodyParts
             BobbyLocation loc;
             _aScanningSteps = rnd.Next(SettingsController.Instance.Scan.ScanningStepsLow, SettingsController.Instance.Scan.ScanningStepsHigh);
             if (SettingsController.Instance.AlternativeRoute) {
-                loc = await LookForBobberSpiralImpl(session, scanArea, _aScanningSteps, SettingsController.Instance.Scan.ScanningRetries, cancellationToken);
+                loc = await LookForBobberSpiralImpl(session, _scanArea, _aScanningSteps, SettingsController.Instance.Scan.ScanningRetries, cancellationToken);
             } else {
-                loc = await LookForBobberImpl(session, scanArea, _aScanningSteps, SettingsController.Instance.Scan.ScanningRetries, cancellationToken);
+                loc = await LookForBobberImpl(session, _scanArea, _aScanningSteps, SettingsController.Instance.Scan.ScanningRetries, cancellationToken);
             }
 
             Log.Information("Bobber scan finished. ({bx},{by})", loc?.X, loc?.Y);
@@ -143,12 +155,11 @@ namespace UltimateFishBot.BodyParts
         public async Task<bool> SetMouseToBobber(BotSession session, BobbyLocation bobberPos, CancellationToken cancellationToken)  {// move mouse to previous recorded position and check shape
             if (!await MoveMouseAndCheckCursor(bobberPos.X, bobberPos.Y, cancellationToken, 1)) {
                 Log.Information("Bobber lost. ({bx},{by})", bobberPos.X, bobberPos.Y);
-                const int fixr = 24;
                 Win32.Rect scanArea;
-                scanArea.Left = bobberPos.X - fixr;
-                scanArea.Right = bobberPos.X + fixr;
-                scanArea.Top = bobberPos.Y - fixr;
-                scanArea.Bottom = bobberPos.Y + fixr;
+                scanArea.Left = bobberPos.X - Fixr;
+                scanArea.Right = bobberPos.X + Fixr;
+                scanArea.Top = bobberPos.Y - Fixr;
+                scanArea.Bottom = bobberPos.Y + Fixr;
                 // initiate a small-area search for bobber
                 var loc = await LookForBobberSpiralImpl(session, scanArea, 4, 1, cancellationToken);
                 if (loc != null) {
@@ -226,10 +237,13 @@ namespace UltimateFishBot.BodyParts
             return null;
         }
 
-        private async Task<bool> MoveMouseAndCheckCursor(int x, int y, CancellationToken cancellationToken,int mpy)   {
-            if (cancellationToken.IsCancellationRequested)
-                throw new TaskCanceledException();
+        private async Task<bool> MoveMouseAndCheckCursor(int x, int y, CancellationToken cancellationToken, int mpy)   {
 
+            if (cancellationToken.IsCancellationRequested)
+            {
+                throw new TaskCanceledException();
+            }
+            
             Win32.MoveMouse(x, y);
 
             // Pause (give the OS a chance to change the cursor)
